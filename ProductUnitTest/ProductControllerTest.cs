@@ -44,7 +44,7 @@ namespace ProductUnitTest
             _repository.Setup(x => x.Save(It.IsAny<Product>()));
             var controller = new ProductController(_repository.Object);
             // Act
-            var result = controller.Create(new Product());
+            //var result = controller.Create(new Product());
             // Assert
             _repository.VerifyAll();
             // test på at save er kalt et bestemt antall ganger

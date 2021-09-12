@@ -1,4 +1,4 @@
-﻿@model WebApp1.Models.Entities.Product
+﻿@model WebApp1.Models.ViewModel.ProductEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -27,19 +27,21 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Class" class="control-label"></label>
-                <input asp-for="Class" class="form-control" />
-                <span asp-validation-for="Class" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
+                <select asp-for="CategoryId"
+                        asp-items="@(new SelectList(Model.Categories,"CategoryId","Name"))">
+                    <option>Please select one</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select asp-for="ManufacturerId"
+                        asp-items="@(new SelectList(Model.Manufacturers,"ManufacturerId","Name"))">
+                    <option>Please select one</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

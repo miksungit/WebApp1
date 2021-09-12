@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using WebApp1.Models.Entities;
 using WebApp1.Models;
 using WebApp1.Data;
+using WebApp1.Models.ViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApp1.Controllers
 {
@@ -24,18 +26,25 @@ namespace WebApp1.Controllers
         // GET: Product/Create
         public ActionResult Create()
         {
-            return View();
+            var product = repository.GetProductEditViewModel();
+            return View(product);
         }
         // POST: Product/Create
         [HttpPost]
-        public ActionResult Create(Product Product)
+        public ActionResult Create([Bind("Name,Description,Price,ManufacturerId,CategoryId")]ProductEditViewModel product)
         {
             try
             {
-                // Kall til metoden save i repository
-                var product = Product;
-                repository.Save(product);
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    Product product1 = new Product();
+                    repository.Save(product1);
+                    TempData["message"] = string.Format("{0} har blitt opprettet", product.Name);
+                    return RedirectToAction("Index");
+                }
+                else 
+                    return View();
+
             }
             catch
             {
@@ -52,9 +61,21 @@ namespace WebApp1.Controllers
         }
         public IEnumerable<Product> GetAll()
         {
-            IEnumerable<Product> products = db.Products;
-            return db.Products;
+            IEnumerable<Product> products = db.Products.Include("Category").Include("Manufacturer");
+            return products;
         }
+
+
+        public ProductEditViewModel GetProductEditViewModel()
+        {
+            List<Category> categories = (from o in db.Categories select o).ToList();
+            List<Manufacturer> manufacturers = (from o in db.Manufacturers select o).ToList();
+
+            ProductEditViewModel productEditViewModel = new ProductEditViewModel { Manufacturers = manufacturers, Categories = categories };
+
+            return productEditViewModel;
+        }
+
 
         public void Save(Product product)
         {
@@ -76,6 +97,11 @@ namespace WebApp1.Controllers
             return products;
         }
         public void Save(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProductEditViewModel GetProductEditViewModel()
         {
             throw new NotImplementedException();
         }
